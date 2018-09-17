@@ -1,0 +1,12 @@
+{
+	"jobName" : "Open Google",
+	"jobLink" : "http://www.google.com/",
+	"next" : {
+		"jobName" : "Open Yahoo",
+		"jobLink" : "http://www.vikatan.com/",
+		"next": {
+			"jobName" : "Open Credit Suisse",
+			"jobLink" : "http://www.dinamalar.com/"
+		}
+	}
+}

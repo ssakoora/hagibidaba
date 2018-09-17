@@ -1,0 +1,50 @@
+<div class="container">
+    <div class="page-header">
+        <h1>Hagibidaba Addition Solver ! </h1>
+    </div>
+    <div class="jumbotron">
+        <p>
+            {{ greeting }}
+        </p>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+            <table class="table table-bordered table-striped table-hover table-responsive">
+                <thead>
+                    <th>Question</th>
+                    <th>Answer</th>
+                    <th>How did you do ?</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="a in answers">
+                        <td> {{ a.question() }} </td>
+                        <td> {{ a.answer }} </td>
+                        <td>
+                            <div ng-if="a.result">
+                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            </div>
+                            <div ng-if="!a.result">
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            </div>
+                            
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <p>
+                <h2> Solve this...</h2>
+            </p>
+            <p>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon"> {{ getQuestion() }}</span>
+                    <input type="text" class="form-control" placeholder="Your answer" ng-model="answer"></input>
+                    <span class="input-group-btn">
+                        <button type = "submit" class="btn btn-default" ng-click="checkClicked()"> Check </button>
+                    </span>
+                </div>
+            </p>
+        </div>
+    </div>
+</div>
