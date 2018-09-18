@@ -8,15 +8,15 @@ mathHelperApp.config(function($routeProvider){
         controller: 'mainController'
     })
     .when('/addition', {
-        templateUrl: '/html/additions.html',
+        templateUrl: '/html/calculations.html',
         controller: 'additionController'        
     })
     .when('/subtraction', {
-        templateUrl: '/html/subtractions.html',
+        templateUrl: '/html/calculations.html',
         controller: 'subtractionController'                
     })
     .when('/multiplication', {
-        templateUrl: '/html/multiplications.html',
+        templateUrl: '/html/calculations.html',
         controller: 'multiplicationController'                
     })    
 });
@@ -27,61 +27,136 @@ mathHelperApp.controller('mainController', ['$scope', '$location', function($sco
     };    
 }]);
 
-mathHelperApp.controller('additionController', ['$scope', '$log', function($scope, $log){
+mathHelperApp.service('resultAggregator', function() {
+    this.aggregate = function(num1, num2, answer, verifier, questionizer ) {
+        return {
+          a : num1,
+          b : num2,
+          answer : answer,
+          result : verifier(num1, num2, answer),
+          question : questionizer(num1, num2)
+        };
+    };
     
-    // initialize the first question
-    $scope.a = Math.floor((Math.random() * 20) + 1);
-    $scope.b = Math.floor((Math.random() * 20) + 1);       
-    $scope.greeting = "Welcome to Hagibidaba's Addition solver ! Solve the addition problems and win fantastic prizes !";
-    //initialize the answers array
-    $scope.answers = [];
-    
-    $scope.checkResults = function(a, b, c) {
-        return a + b == c;
+    this.myFunc = function (x) {
+        return x.toString(16);
+    }
+});
+
+mathHelperApp.service('randomizer', function(){
+    this.getNewRandomNumber = function(limit) {
+        var lim = limit ? limit : 20;
+        return Math.floor((Math.random() * lim) + 1);
+    }
+});
+
+mathHelperApp.controller('additionController', ['$scope', '$log', 'resultAggregator', 'randomizer', function($scope, $log, $resultAggregator, $randomizer ) {
+        
+    var initialize = function() {        
+        changeQuestion();
+        $scope.answers = [];
+        $scope.message = '';
+    }
+
+    var resultVerifier = function(a, b, answer){
+      return a + b == answer;  
     }
     
-
-    $scope.checkClicked = function(){
-        var newAnswerObject = {
-            a : $scope.a,
-            b : $scope.b,
-            answer: $scope.answer,
-            result : $scope.a + $scope.b == $scope.answer,
-            question : function(){
-                return(this.a + " + " + this.b );  
-            },
-            formattedString : function(){
-                return(this.a + " + "+ this.b + " = "+ this.answer + " ==> " + this.result);
-            }
-        };
-        
-        if(newAnswerObject.result){
-            $scope.greeting = "You did well ! Let us see if you can solve the next one !";
-        } else {
-            $scope.greeting = "That was WRONG ! Try again next time !";
-        }
-        
-        $scope.answers.push(newAnswerObject);        
-        $log.info($scope.answers);
-        $scope.changeQuestion();
-    };
+    var questionizer = function(a, b) {
+        return(a + " + " + b ); 
+    }    
     
-    $scope.changeQuestion = function() {
-        $scope.a = Math.floor((Math.random() * 100) + 1);
-        $scope.b = Math.floor((Math.random() * 100) + 1);       
+    
+    var changeQuestion = function() {
+        $scope.a = $randomizer.getNewRandomNumber(50);
+        $scope.b = $randomizer.getNewRandomNumber(50);
         $scope.answer = '';
     };
+        
+    $scope.operation = "Addition";
+
+    $scope.operationCode = "+";
     
-    $scope.getQuestion = function(){
-      return  this.a + " + " + this.b + " = ";  
+    $scope.checkClicked = function() {    
+        $scope.newAnswerObject =  $resultAggregator.aggregate($scope.a, $scope.b, $scope.answer, resultVerifier, questionizer);        
+        $scope.answers.push($scope.newAnswerObject);
+        changeQuestion();
     };
+
+    initialize();
     
 }]);
 
-mathHelperApp.controller('subtractionController', ['$scope', function($scope){
+mathHelperApp.controller('subtractionController', ['$scope', '$log', 'resultAggregator', 'randomizer', function($scope, $log, $resultAggregator, $randomizer ) {
+        
+    var initialize = function() {        
+        changeQuestion();
+        $scope.answers = [];
+        $scope.message = '';
+    }
+
+    var resultVerifier = function(a, b, answer){
+      return a - b == answer;  
+    }
+    
+    var questionizer = function(a, b) {
+        return(a + " - " + b ); 
+    }    
+    
+    
+    var changeQuestion = function() {
+        $scope.a = $randomizer.getNewRandomNumber(50);
+        $scope.b = $randomizer.getNewRandomNumber($scope.a);
+        $scope.answer = '';
+    };
+        
+    $scope.operation = "Subtraction";
+
+    $scope.operationCode = "-";
+    
+    $scope.checkClicked = function() {    
+        $scope.newAnswerObject =  $resultAggregator.aggregate($scope.a, $scope.b, $scope.answer, resultVerifier, questionizer);        
+        $scope.answers.push($scope.newAnswerObject);
+        changeQuestion();
+    };
+
+    initialize();
     
 }]);
 
-mathHelperApp.controller('multiplicationController', ['$scope', function($scope){
+mathHelperApp.controller('multiplicationController', ['$scope', '$log', 'resultAggregator', 'randomizer', function($scope, $log, $resultAggregator, $randomizer ) {
+        
+    var initialize = function() {        
+        changeQuestion();
+        $scope.answers = [];
+        $scope.message = '';
+    }
+
+    var resultVerifier = function(a, b, answer){
+      return a * b == answer;  
+    }
+    
+    var questionizer = function(a, b) {
+        return(a + " * " + b ); 
+    }    
+    
+    
+    var changeQuestion = function() {
+        $scope.a = $randomizer.getNewRandomNumber(5);
+        $scope.b = $randomizer.getNewRandomNumber(5);
+        $scope.answer = '';
+    };
+        
+    $scope.operation = "Multiplication";
+
+    $scope.operationCode = "*";
+    
+    $scope.checkClicked = function() {    
+        $scope.newAnswerObject =  $resultAggregator.aggregate($scope.a, $scope.b, $scope.answer, resultVerifier, questionizer);        
+        $scope.answers.push($scope.newAnswerObject);
+        changeQuestion();
+    };
+
+    initialize();
     
 }]);
